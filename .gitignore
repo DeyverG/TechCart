@@ -28,3 +28,8 @@ dist-ssr
 .eslintcache
 coverage/
 vite.config.d.ts
+
+# Playwright
+playwright-report/
+test-results/
+playwright/.cache/
