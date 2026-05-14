@@ -17,9 +17,9 @@ export default function Cart({ items, onUpdateQuantity, onRemove, stockError, ba
 
   useEffect(() => {
     const newSubtotal = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-    // Truncate to 2 decimals to match the test case expectation ($38.09 instead of rounded $38.10)
+    // Redondear a 2 decimales
     const rawTax = newSubtotal * 0.19;
-    const newTax = Math.floor(rawTax * 100) / 100;
+    const newTax = Math.round(rawTax * 100) / 100;
     const newTotal = newSubtotal + newTax;
 
     setSubtotal(newSubtotal);

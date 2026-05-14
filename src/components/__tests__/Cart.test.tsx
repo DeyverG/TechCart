@@ -8,15 +8,15 @@ const mockItems: CartItem[] = [
 ];
 
 describe('Cart', () => {
-  it('calculates totals correctly with truncated tax', () => {
+  it('calculates totals correctly with rounded tax', () => {
     const mockUpdate = jest.fn();
     const mockRemove = jest.fn();
     
     render(<Cart items={mockItems} onUpdateQuantity={mockUpdate} onRemove={mockRemove} stockError={null} badgeCount={3} />);
     
     expect(screen.getByText('$200.50')).toBeInTheDocument(); // Subtotal
-    expect(screen.getByText('$38.09')).toBeInTheDocument(); // Tax truncated
-    expect(screen.getByText('$238.59')).toBeInTheDocument(); // Total
+    expect(screen.getByText('$38.10')).toBeInTheDocument(); // Tax rounded
+    expect(screen.getByText('$238.60')).toBeInTheDocument(); // Total
   });
 
   it('renders empty cart message when no items', () => {
@@ -42,5 +42,17 @@ describe('Cart', () => {
     fireEvent.click(removeBtn);
     
     expect(mockRemove).toHaveBeenCalledWith(mockItems[0].id);
+  });
+
+  it('ignores invalid quantity changes', () => {
+    const mockUpdate = jest.fn();
+    render(<Cart items={[mockItems[0]]} onUpdateQuantity={mockUpdate} onRemove={jest.fn()} stockError={null} badgeCount={2} />);
+    
+    const input = screen.getByRole('spinbutton', { name: /cantidad/i });
+    fireEvent.change(input, { target: { value: '0' } });
+    fireEvent.change(input, { target: { value: '-1' } });
+    fireEvent.change(input, { target: { value: 'abc' } });
+    
+    expect(mockUpdate).not.toHaveBeenCalled();
   });
 });

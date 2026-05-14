@@ -21,11 +21,11 @@ test.describe('TechCart - Casos de Prueba de Optimización', () => {
     // Validar Subtotal: $200.50
     await expect(page.locator('#subtotal')).toHaveText('$200.50');
 
-    // Validar Impuestos (19%): $38.09 (Nota: 200.50 * 0.19 = 38.095 -> truncado a 38.09)
-    await expect(page.locator('#tax')).toHaveText('$38.09');
+    // Validar Impuestos (19%): $38.10 (Nota: 200.50 * 0.19 = 38.095 -> redondeado a 38.10)
+    await expect(page.locator('#tax')).toHaveText('$38.10');
 
-    // Validar Total: $238.59
-    await expect(page.locator('#total')).toHaveText('$238.59');
+    // Validar Total: $238.60
+    await expect(page.locator('#total')).toHaveText('$238.60');
   });
 
   // CP-OPT-02: Inicialización del carrito y transición de estado.
