@@ -1,0 +1,117 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  quality-and-unit-tests:
+    name: Code Quality & Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # Paso 1: Clonar el código fuente.
+      # Se usa fetch-depth: 0 para que SonarCloud tenga acceso a todo el historial de Git
+      # y pueda determinar correctamente los autores de las líneas y el código nuevo.
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Paso 2: Configurar el entorno de Node.js 22 con caché nativa para dependencias de npm.
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      # Paso 3: Instalar las dependencias de forma limpia y determinista usando npm ci.
+      - name: Install Dependencies
+        run: npm ci
+
+      # Paso 4: Ejecutar el linter si el script existe en el package.json.
+      - name: Run Linter
+        run: npm run lint --if-present
+
+      # Paso 5: Ejecutar pruebas unitarias con Jest y generar el reporte de cobertura (LCOV).
+      # Si alguna prueba falla, este paso fallará y bloqueará la Pull Request en GitHub.
+      - name: Run Unit Tests with Coverage
+        run: npm run test:coverage
+
+      # Paso 6: Ejecutar análisis de calidad de código con SonarCloud.
+      # Utiliza el reporte de cobertura generado en el paso anterior.
+      # -Dsonar.qualitygate.wait=true bloquea el job de forma síncrona si el Quality Gate no pasa,
+      # impidiendo el merge de la Pull Request.
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Proporcionado automáticamente por GitHub
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # Debe configurarse en los Secrets del repositorio
+        with:
+          args: >
+            -Dsonar.qualitygate.wait=true
+
+  e2e-tests:
+    name: End-to-End Tests (Playwright)
+    # Se ejecuta únicamente si las pruebas unitarias y el análisis de calidad pasaron con éxito.
+    needs: quality-and-unit-tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      # Paso para obtener la versión exacta de Playwright instalada en el proyecto
+      # para usarla como clave de validación en la caché de navegadores.
+      - name: Get Playwright Version
+        id: playwright-version
+        run: echo "version=$(npx playwright --version | awk '{print $2}')" >> $GITHUB_OUTPUT
+
+      # Paso para almacenar en caché los binarios de los navegadores de Playwright.
+      # Esto optimiza drásticamente el tiempo de ejecución en corridas subsiguientes.
+      - name: Cache Playwright Browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      # Si los navegadores no estaban en caché, se instalan junto con sus dependencias de sistema operativo.
+      - name: Install Playwright Browsers & OS Dependencies
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps
+
+      # Si los navegadores ya estaban en caché, solo se instalan las dependencias de sistema operativo necesarias.
+      - name: Install Playwright OS Dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps
+
+      # Ejecutar las pruebas E2E en modo headless.
+      # Si algún flujo falla, el job fallará y bloqueará la Pull Request impidiendo el merge.
+      - name: Run Playwright E2E Tests
+        run: npm run test:e2e
+
+      # Subir los reportes y trazas generados por Playwright como un artifact de GitHub.
+      # Permite descargar y visualizar visualmente fallos o grabaciones desde la interfaz de GitHub Actions.
+      - name: Upload Playwright Report Artifact
+        if: always() # Garantiza que el reporte se suba incluso si algún test E2E falló
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30

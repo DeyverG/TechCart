@@ -1,6 +1,13 @@
 # TechCart 🛒
 
+[![CI/CD Pipeline](https://github.com/DeyverG/TechCart/actions/workflows/ci.yml/badge.svg)](https://github.com/DeyverG/TechCart/actions/workflows/ci.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=techcart-project&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=techcart-project)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=techcart-project&metric=coverage)](https://sonarcloud.io/summary/new_code?id=techcart-project)
+
 Este es el repositorio principal para el módulo de compras TechCart. Está construido utilizando React, Vite y Tailwind CSS, implementando reglas estrictas de lógica de negocio e integraciones de testing completas.
+
+### 📐 Lógica de Redondeo Financiero
+Todos los cálculos de subtotal, impuestos (19%) y totales aplican **redondeo estándar (`Math.round`)** a 2 decimales para garantizar consistencia absoluta en los reportes financieros.
 
 ## 🚀 Empezando
 
@@ -18,9 +25,15 @@ Este es el repositorio principal para el módulo de compras TechCart. Está cons
 
 ## 🧪 Pruebas Unitarias (Jest)
 
-El proyecto cuenta con pruebas unitarias para validar la lógica interna de los componentes React, como cálculos matemáticos y comportamiento de la interfaz gráfica sin levantar un navegador completo.
+El proyecto cuenta con pruebas unitarias para validar la lógica interna de los componentes React, como cálculos matemáticos y comportamiento de la interfaz gráfica sin levantar un navegador completo. Implementa un **umbral de cobertura mínimo del 80% (`coverageThreshold`)** de forma estricta.
 
 - Las pruebas se encuentran dentro del directorio: `src/components/__tests__/`
+
+### Medir Cobertura de Código
+Para ejecutar las pruebas y verificar el reporte general de cobertura en todas las métricas (Statements, Branches, Functions, Lines):
+```bash
+npm run test:coverage
+```
 
 ### Ejecutar Pruebas Unitarias
 
@@ -47,9 +60,12 @@ Utilizamos [Playwright](https://playwright.dev/) para simular interacciones real
 
 ### Configurar Playwright (Solo la primera vez)
 
-Debes descargar los binarios del navegador (Chromium) para que Playwright pueda abrirlo:
+La automatización E2E está configurada para probar simultáneamente en los tres motores principales: **Chromium, Firefox y WebKit**.
+
+Para descargar los binarios e instalar las dependencias de sistema operativo requeridas para los tres navegadores (Chromium, Firefox y WebKit):
 ```bash
-npx playwright install chromium
+npx playwright install
+npx playwright install-deps
 ```
 
 ### Ejecutar Pruebas E2E
