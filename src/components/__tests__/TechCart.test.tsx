@@ -137,12 +137,12 @@ describe('TechCart Integration', () => {
     const subtotal = container.querySelector('#subtotal');
     expect(subtotal).toHaveTextContent('$150.50');
     
-    // Tax = floor(150.50 * 0.19 * 100) / 100 = floor(28.595 * 100) / 100 = floor(2859.5) / 100 = 28.59
+    // Tax = round(150.50 * 0.19 * 100) / 100 = round(28.595 * 100) / 100 = round(2859.5) / 100 = 28.60
     const tax = container.querySelector('#tax');
-    expect(tax).toHaveTextContent('$28.59');
+    expect(tax).toHaveTextContent('$28.60');
     
-    // Total = 150.50 + 28.59 = 179.09
+    // Total = 150.50 + 28.60 = 179.10
     const total = container.querySelector('#total');
-    expect(total).toHaveTextContent('$179.09');
+    expect(total).toHaveTextContent('$179.10');
   });
 });
