@@ -1,5 +1,9 @@
 # TechCart 🛒
 
+[![CI/CD Pipeline](https://github.com/DeyverG/TechCart/actions/workflows/ci.yml/badge.svg)](https://github.com/DeyverG/TechCart/actions/workflows/ci.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=techcart-project&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=techcart-project)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=techcart-project&metric=coverage)](https://sonarcloud.io/summary/new_code?id=techcart-project)
+
 Este es el repositorio principal para el módulo de compras TechCart. Está construido utilizando React, Vite y Tailwind CSS, implementando reglas estrictas de lógica de negocio e integraciones de testing completas.
 
 ### 📐 Lógica de Redondeo Financiero

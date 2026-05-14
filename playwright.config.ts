@@ -6,10 +6,12 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  // Configuración recomendada para CI: uso de 'github' para crear anotaciones en PRs y 'html' para el artefacto completo.
+  reporter: process.env.CI ? [['github'], ['html']] : [['html']],
   use: {
     baseURL: 'http://localhost:5173', // Default Vite port
-    trace: 'on-first-retry',
+    // En CI se retienen las trazas de los fallos para poder diagnosticarlos en los artifacts de GitHub Actions.
+    trace: process.env.CI ? 'retain-on-failure' : 'on-first-retry',
   },
 
   projects: [

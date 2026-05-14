@@ -18,6 +18,9 @@ const config: Config = {
     }],
   },
   testMatch: ['**/__tests__/**/*.test.(ts|tsx)'],
+  // Configuración de salida de cobertura requerida para la integración con SonarCloud
+  coverageDirectory: 'coverage',
+  coverageReporters: ['lcov', 'text', 'text-summary'],
   coverageThreshold: {
     global: {
       branches: 80,
