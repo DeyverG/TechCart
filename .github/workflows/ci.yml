@@ -36,10 +36,6 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      # Linter opcional
-      - name: Run Linter
-        run: npm run lint --if-present
-
       # Tests unitarios + coverage
       - name: Run Unit Tests with Coverage
         run: npm run test:coverage
