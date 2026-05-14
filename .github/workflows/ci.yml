@@ -47,7 +47,7 @@ jobs:
       # -Dsonar.qualitygate.wait=true bloquea el job de forma síncrona si el Quality Gate no pasa,
       # impidiendo el merge de la Pull Request.
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+        uses: SonarSource/sonarcloud-github-action@ba3875e525656557b4f535147573429355603770
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Proporcionado automáticamente por GitHub
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # Debe configurarse en los Secrets del repositorio

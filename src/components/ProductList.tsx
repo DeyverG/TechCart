@@ -5,7 +5,7 @@ interface ProductListProps {
   onAdd: (product: Product) => void;
 }
 
-export default function ProductList({ products, onAdd }: ProductListProps) {
+export default function ProductList({ products, onAdd }: Readonly<ProductListProps>) {
   return (
     <div className="bg-white rounded-2xl shadow-xl shadow-blue-900/5 border border-slate-100 overflow-hidden">
       <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-5">

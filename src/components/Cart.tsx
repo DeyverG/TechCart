@@ -9,11 +9,11 @@ interface CartProps {
   badgeCount: number;
 }
 
-export default function Cart({ items, onUpdateQuantity, onRemove, stockError, badgeCount }: CartProps) {
+export default function Cart({ items, onUpdateQuantity, onRemove, stockError, badgeCount }: Readonly<CartProps>) {
   const [subtotal, setSubtotal] = useState(0);
   const [tax, setTax] = useState(0);
   const [total, setTotal] = useState(0);
-  const [, setDummy] = useState(0); // para forzar render en inputs invalidos
+  const [_dummy, setDummy] = useState(0); // para forzar render en inputs invalidos
 
   useEffect(() => {
     const newSubtotal = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
@@ -29,10 +29,10 @@ export default function Cart({ items, onUpdateQuantity, onRemove, stockError, ba
 
   const handleChange = (item: CartItem, e: ChangeEvent<HTMLInputElement>) => {
     const valueStr = e.target.value;
-    const value = parseInt(valueStr, 10);
+    const value = Number.parseInt(valueStr, 10);
     
     // Validar: si es invalido (NaN, cero o negativo), rechazar el input restaurando su valor anterior
-    if (isNaN(value) || value <= 0) {
+    if (Number.isNaN(value) || value <= 0) {
       setDummy(d => d + 1); // Fuerza render para descartar el input del DOM
       return;
     }
