@@ -15,9 +15,9 @@ export interface CartItem extends Product {
 }
 
 const PRODUCTS: Product[] = [
-  { id: 'A', name: 'Producto A', price: 50.00, sku: 'A', maxStock: null },
-  { id: 'B', name: 'Producto B', price: 100.50, sku: 'B', maxStock: null },
-  { id: 'SKU-999', name: 'Producto C', price: 20.00, sku: 'SKU-999', maxStock: 5 },
+  { id: 'A', name: 'Producto A', price: 50, sku: 'A', maxStock: null },
+  { id: 'B', name: 'Producto B', price: 100.5, sku: 'B', maxStock: null },
+  { id: 'SKU-999', name: 'Producto C', price: 20, sku: 'SKU-999', maxStock: 5 },
 ];
 
 export default function TechCart() {
